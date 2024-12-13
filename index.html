@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            height: 100vh;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        .tabs {
+            display: flex;
+            flex-direction: column;
+            width: 200px;
+            background-color: #7b2cbf;
+            color: white;
+            padding: 10px;
+        }
+        .tabs button {
+            background-color: transparent;
+            border: none;
+            color: white;
+            padding: 15px;
+            text-align: left;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .tabs button:hover {
+            background-color: #5a189a;
+        }
+        .tabs button.active {
+            background-color: #5a189a;
+        }
+        .content {
+            flex-grow: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background-color: #ffffff;
+        }
+        .invoice-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .invoice-header h1 {
+            margin: 0;
+            color: #7b2cbf;
+        }
+        .editable {
+            border: 1px dashed #ccc;
+            padding: 5px;
+            cursor: text;
+            background-color: #f9f9f9;
+        }
+        .invoice-details, .payment-summary {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        .invoice-details td, .payment-summary td {
+            padding: 8px;
+            border: 1px solid #ddd;
+        }
+        .buttons {
+            text-align: center;
+        }
+        button {
+            padding: 10px 15px;
+            font-size: 16px;
+            margin: 5px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            background-color: #7b2cbf;
+            color: white;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #5a189a;
+        }
+        .quote-table, .payment-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        .quote-table th, .quote-table td, .payment-table th, .payment-table td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        .quote-table th, .payment-table th {
+            background-color: #7b2cbf;
+            color: white;
+        }
+        .total {
+            text-align: right;
+            margin-top: 20px;
+        }
+        .reminder {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #7b2cbf;
+            background-color: #f9f9ff;
+            color: #333;
+        }
+        .credit-card-section {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f9f9ff;
+            border: 1px solid #7b2cbf;
+        }
+        .credit-card-section input {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="tabs">
+        <button onclick="showTab('overview')" class="active">Overview</button>
+        <button onclick="showTab('details')">Details</button>
+        <button onclick="showTab('payments')">Payments</button>
+        <button onclick="showTab('quotes')">Quotes</button>
+        <button onclick="showTab('payment-method')">Payment Method</button>
+    </div>
+    <div class="content" id="content">
+        <div id="overview" class="tab-content">
+            <div class="invoice-header">
+                <h1>Invoice System Overview</h1>
+                <p>Welcome to the Invoice System.</p>
+            </div>
+            <div class="reminder">
+                <h3>Why Choose Our Invoice System?</h3>
+                <p>Our professional invoice system streamlines your billing process, automates calculations, and ensures timely payments. With features like customizable quotes, dynamic payment tracking, and tax-inclusive reporting, this system is designed to simplify your financial operations and elevate your business efficiency. Let us handle the complexities, so you can focus on growing your business.</p>
+            </div>
+            <div class="buttons">
+                <button onclick="handleLogin()">Login/Sign Up</button>
+                <button onclick="handleNotificationSignUp()">Sign Up for Notifications</button>
+            </div>
+        </div>
+
+        <div id="details" class="tab-content" style="display: none;">
+            <div class="invoice-header">
+                <h1>Details</h1>
+            </div>
+            <table class="invoice-details">
+                <tr>
+                    <td><strong>Invoice #: </strong><span id="invoice-number" contenteditable="true" class="editable"></span></td>
+                    <td><strong>Date: </strong><span id="invoice-date" contenteditable="true" class="editable">12/11/2024</span></td>
+                </tr>
+            </table>
+            <table class="invoice-details">
+                <thead>
+                    <tr>
+                        <th>Billed To</th>
+                        <th>Shipped To</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td contenteditable="true" class="editable">Client Name<br>Address, City, State, ZIP</td>
+                        <td contenteditable="true" class="editable">Client Name<br>Address, City, State, ZIP</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="buttons">
+                <button>Submit Details</button>
+            </div>
+        </div>
+
+        <div id="payments" class="tab-content" style="display: none;">
+            <div class="invoice-header">
+                <h1>Payments</h1>
+            </div>
+            <h3>Payment History</h3>
+            <table class="payment-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Description</th>
+                        <th>Amount</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td contenteditable="true" class="editable">12/01/2024</td>
+                        <td>Initial Payment</td>
+                        <td contenteditable="true" class="editable">$500</td>
+                        <td>Paid</td>
+                    </tr>
+                    <tr>
+                        <td contenteditable="true" class="editable">12/15/2024</td>
+                        <td>Monthly Subscription</td>
+                        <td contenteditable="true" class="editable">$200</td>
+                        <td>Pending</td>
+                    </tr>
+                </tbody>
+            </table>
+            <h3>Upcoming Payments</h3>
+            <table class="payment-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Description</th>
+                        <th>Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td contenteditable="true" class="editable">01/01/2025</td>
+                        <td>Quarterly Service Fee</td>
+                        <td contenteditable="true" class="editable">$300</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="buttons">
+                <button>Submit Payments</button>
+            </div>
+        </div>
+
+        <div id="quotes" class="tab-content" style="display: none;">
+            <div class="invoice-header">
+                <h1>Quotes</h1>
+            </div>
+            <table class="quote-table">
+                <thead>
+                    <tr>
+                        <th>Quote ID</th>
+                        <th>Client</th>
+                        <th>Description</th>
+                        <th>Amount</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="quote-table-body">
+                    <!-- Rows will be dynamically added by JavaScript -->
+                </tbody>
+            </table>
+            <div class="buttons">
+                <button onclick="addQuote()">Add Quote</button>
+            </div>
+        </div>
+
+        <div id="payment-method" class="tab-content" style="display: none;">
+            <div class="invoice-header">
+                <h1>Payment Method</h1>
+            </div>
+            <div class="credit-card-section">
+                <h3>Enter Your Credit Card Information</h3>
+                <form>
+                    <label for="card-name">Cardholder Name</label>
+                    <input type="text" id="card-name" name="card-name" placeholder="John Doe">
+                    <label for="card-number">Card Number</label>
+                    <input type="text" id="card-number" name="card-number" placeholder="1234 5678 9876 5432">
+                    <label for="card-expiry">Expiration Date</label>
+                    <input type="text" id="card-expiry" name="card-expiry" placeholder="MM/YY">
+                    <label for="card-cvc">CVC</label>
+                    <input type="text" id="card-cvc" name="card-cvc" placeholder="123">
+                    <div class="buttons">
+                        <button type="submit">Submit Payment</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script>
+        function showTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.style.display = 'none';
+            });
+            document.getElementById(tabId).style.display = 'block';
+
+            document.querySelectorAll('.tabs button').forEach(button => {
+                button.classList.remove('active');
+            });
+            document.querySelector(`.tabs button[onclick="showTab('${tabId}')"]`).classList.add('active');
+        }
+
+        function generateRandomInvoiceNumber() {
+            return 'INV' + Math.floor(Math.random() * 1000000);
+        }
+
+        function addQuote() {
+            const quoteId = 'Q' + Math.floor(Math.random() * 1000);
+            const date = prompt("Enter the date for the quote:", new Date().toLocaleDateString());
+            const client = prompt("Enter the client name:");
+            const description = prompt("Enter the description:");
+            const amount = prompt("Enter the amount:");
+
+            if (confirm("Do you want to submit this quote?")) {
+                const quoteTableBody = document.getElementById("quote-table-body");
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                    <td>${quoteId}</td>
+                    <td contenteditable="true">${client}</td>
+                    <td contenteditable="true">${description}</td>
+                    <td contenteditable="true">${amount}</td>
+                    <td>${date}</td>
+                    <td>Pending</td>
+                `;
+                quoteTableBody.appendChild(row);
+            } else {
+                alert("Quote was not submitted.");
+            }
+        }
+
+        // Set a random invoice number on page load
+        document.getElementById("invoice-number").textContent = generateRandomInvoiceNumber();
+    </script>
+</body>
+</html>
